@@ -7,6 +7,8 @@ from langchain import hub
 from dotenv import load_dotenv
 import os
 
+os.environ['LANGSMITH_PROJECT'] = 'ReAct Agent'
+
 load_dotenv()
 
 search_tool = DuckDuckGoSearchRun()

@@ -18,6 +18,8 @@ from langchain_core.output_parsers import StrOutputParser
 
 load_dotenv()
 
+os.environ['LANGSMITH_PROJECT'] = 'RAG App'
+
 PDF_PATH = "islr.pdf"  # change to your file
 INDEX_ROOT = Path(".indices")
 INDEX_ROOT.mkdir(exist_ok=True)
@@ -140,7 +142,7 @@ def setup_pipeline_and_query(
 
     return chain.invoke(
         question,
-        config={"run_name": "pdf_rag_query", "tags": ["qa"], "metadata": {"k": 4}}
+        config={"run_name": "RAG_V4", "tags": ["qa"], "metadata": {"k": 4}}
     )
 
 # ----------------- CLI -----------------

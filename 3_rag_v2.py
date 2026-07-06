@@ -18,6 +18,8 @@ from langchain_core.output_parsers import StrOutputParser
 # LANGCHAIN_API_KEY=...
 # LANGCHAIN_PROJECT=pdf_rag_demo
 
+os.environ['LANGSMITH_PROJECT'] = 'RAG App'
+
 load_dotenv()
 
 PDF_PATH = "islr.pdf"  # change to your file
@@ -78,7 +80,7 @@ q = input("\nQ: ").strip()
 
 # Give the visible run name + tags/metadata so it’s easy to find:
 config = {
-    "run_name": "pdf_rag_query"
+    "run_name": "RAG_V2"
 }
 
 ans = chain.invoke(q, config=config)

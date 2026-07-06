@@ -13,6 +13,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
 
+os.environ['LANGSMITH_PROJECT'] = 'RAG App'
+
 load_dotenv()
 
 PDF_PATH = "islr.pdf"  # <- change to your file
@@ -71,7 +73,7 @@ def setup_pipeline_and_query(pdf_path: str, question: str):
     chain = parallel | prompt | llm | StrOutputParser()
 
     # This LangChain run stays under the same root (since we're inside this traced function)
-    lc_config = {"run_name": "pdf_rag_query"}
+    lc_config = {"run_name": "RAG_V3"}
     return chain.invoke(question, config=lc_config)
 
 # ----------------- CLI -----------------

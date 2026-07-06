@@ -44,7 +44,7 @@ This script demonstrates the absolute basics of LangSmith auto-tracing. By simpl
 - **LangSmith Tracing Visualization**:
   You will see a flat trace representing the prompt template, the LLM invocation (`ChatMistralAI`), and the output parser.
   
-  ![Simple LLM Call Trace](1_simple_llm_call.png)
+  ![Simple LLM Call Trace](images/1_simple_llm_call.png)
 
 ---
 
@@ -70,7 +70,7 @@ See how LangSmith automatically tracks data flowing between multiple links in a 
   ```
 
 - **LangSmith Tracing Visualization**:
-  ![Sequential Chain Trace](2_sequential_chain.png)
+  ![Sequential Chain Trace](images/2_sequential_chain.png)
 
 ---
 
@@ -78,11 +78,28 @@ See how LangSmith automatically tracks data flowing between multiple links in a 
 In this practice series, I built a PDF-based RAG pipeline and optimized it using LangSmith tracing:
 
 * **Version 1 (`3_rag_v1.py`)**: Basic RAG implementation using a PDF loader (`islr.pdf`), recursive character text splitting, FAISS vector store, and Mistral embeddings.
+  - **Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'RAG App'`.
+  - **LangSmith Tracing Visualization**:
+    ![RAG V1 Trace](images/3_rag_v1.png)
 * **Version 2 (`3_rag_v2.py`)**: Introduces the `@traceable` decorator to trace custom Python functions (`load_pdf`, `split_documents`, `build_vectorstore`) that aren't natively LangChain runnables.
+  - **Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'RAG App'` and specifies a custom `run_name: "RAG_V2"` in the run configurations.
+  - **Setup Pipeline Trace (Metadata & Nested custom functions)**:
+    ![RAG V2 Setup Trace](images/3_rag_v2_1.png)
+  - **Query Execution Trace (`RAG_V2`)**:
+    ![RAG V2 Query Trace](images/3_rag_v2_2.png)
 * **Version 3 (`3_rag_v3.py`)**: Creates a clean nested trace tree by wrapping the setup and run steps in a parent function decorated with `@traceable(name="pdf_rag_full_run")`.
+  - **Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'RAG App'` and specifies a custom `run_name: "RAG_V3"` in the run configurations.
+  - **LangSmith Tracing Visualization**:
+    ![RAG V3 Trace](images/3_rag_v3.png)
 * **Version 4 (`3_rag_v4.py`)**: Adds performance caching. Instead of reloading and re-embedding the PDF every time, it computes a fingerprint of the PDF and saves/loads the FAISS index locally. LangSmith helps visualize the latency difference when cache hits occur.
+  - **Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'RAG App'` and specifies a custom `run_name: "RAG_V4"` in the run configurations.
+  - **Setup / Index Build Trace**:
+    ![RAG V4 Index Build Trace](images/3_rag_v4_1.png)
+  - **Query Execution Trace (`RAG_V4`)**:
+    ![RAG V4 Query Trace](images/3_rag_v4_2.png)
 
-- **Concepts**: Custom `@traceable` spans, trace nesting, metadata/tags, run configuration.
+- **Concepts**: Custom `@traceable` spans, trace nesting, metadata/tags, run configuration, dynamic project routing, and selecting the correct embedding model (`mistral-embed`).
+- **Project Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'RAG App'` to group RAG runs under one dashboard project.
 - **Run**:
   ```bash
   python3 3_rag_v4.py
@@ -100,13 +117,13 @@ In this practice series, I built a PDF-based RAG pipeline and optimized it using
       Query --> LLM["ChatMistralAI"]
       Query --> Parser["StrOutputParser"]
   ```
-
 ---
 
 ### 4. ReAct Agent Tracing (`4_agent.py`)
 Agents are notoriously hard to debug due to their iterative reasoning loops. LangSmith shines here by laying out every step of the Agent's thought process, tools used, and intermediate results.
 
 - **Concepts**: ReAct framework, tool tracing, LangChain Hub integration, agent loop tracing.
+- **Project Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'ReAct Agent'` to group agent tracing runs.
 - **Tools**:
   - `DuckDuckGoSearchRun`: For live web searches.
   - `get_weather_data`: Custom tool fetching weather from the Weatherstack API.
@@ -123,12 +140,19 @@ Agents are notoriously hard to debug due to their iterative reasoning loops. Lan
       AgentExec --> FinalResponse["Final Answer"]
   ```
 
+- **LangSmith Tracing Visualizations**:
+  - *Full ReAct Loop Execution*:
+    ![Agent Execution Trace](images/4_agent_1.png)
+  - *Custom Tool Call Detail (`get_weather_data`)*:
+    ![Agent Tool Execution Detail](images/4_agent_2.png)
+
 ---
 
 ### 5. Multi-Agent & Parallel Workflows with LangGraph (`5_langgraph.py`)
 LangGraph allows you to construct complex, stateful multi-agent workflows. This script implements an essay evaluation system that scores essays across three dimensions in parallel (fan-out), aggregates the scores (fan-in), and outputs a final grade.
 
 - **Concepts**: Parallel node execution, fan-out/fan-in patterns, StateGraph, node-level tracing.
+- **Project Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'LangGraph App'` to route traces to the LangGraph dashboard.
 - **Run**:
   ```bash
   python3 5_langgraph.py
@@ -146,6 +170,12 @@ LangGraph allows you to construct complex, stateful multi-agent workflows. This 
       final_evaluation --> END
       END --> [*]
   ```
+
+- **LangSmith Tracing Visualizations**:
+  - *Parallel Node Tracing (Fan-out/Fan-in)*:
+    ![LangGraph Parallel Traces](images/5_langgraph_1.png)
+  - *Detailed Run View (Inputs, Outputs & Metadata)*:
+    ![LangGraph Trace Details](images/5_langgraph_2.png)
 
 ---
 

@@ -11,6 +11,8 @@ from langsmith import traceable
 from langchain_mistralai import MistralAIEmbeddings, ChatMistralAI
 from langgraph.graph import StateGraph, START, END
 
+os.environ['LANGSMITH_PROJECT'] = 'LangGraph App'
+
 # ---------- Setup ----------
 load_dotenv()
 model = ChatMistralAI(model="mistral-medium-latest", api_key=os.getenv("MISTRAL_API_KEY"))
