@@ -1,10 +1,11 @@
-from langchain_openai import ChatOpenAI
+from langchain_mistralai import ChatMistralAI
 from langchain_core.tools import tool
 import requests
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain.agents import create_react_agent, AgentExecutor
 from langchain import hub
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
@@ -21,7 +22,7 @@ def get_weather_data(city: str) -> str:
 
   return response.json()
 
-llm = ChatOpenAI()
+llm = ChatMistralAI(model="mistral-large-latest", api_key=os.getenv("MISTRAL_API_KEY"))
 
 # Step 2: Pull the ReAct prompt from LangChain Hub
 prompt = hub.pull("hwchase17/react")  # pulls the standard ReAct agent prompt
@@ -38,7 +39,8 @@ agent_executor = AgentExecutor(
     agent=agent,
     tools=[search_tool, get_weather_data],
     verbose=True,
-    max_iterations=5
+    max_iterations=5,
+    handle_parsing_errors=True
 )
 
 # What is the release date of Dhadak 2?

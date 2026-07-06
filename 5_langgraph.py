@@ -2,17 +2,18 @@
 
 import operator
 from typing import TypedDict, Annotated, List
+import os
 
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
 from langsmith import traceable
-from langchain_openai import ChatOpenAI
+from langchain_mistralai import MistralAIEmbeddings, ChatMistralAI
 from langgraph.graph import StateGraph, START, END
 
 # ---------- Setup ----------
 load_dotenv()
-model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+model = ChatMistralAI(model="mistral-medium-latest", api_key=os.getenv("MISTRAL_API_KEY"))
 
 # ---------- Structured schema & model ----------
 class EvaluationSchema(BaseModel):

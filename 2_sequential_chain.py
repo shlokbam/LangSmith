@@ -1,7 +1,8 @@
-from langchain_openai import ChatOpenAI
+from langchain_mistralai import ChatMistralAI
 from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+import os 
 
 load_dotenv()
 
@@ -15,7 +16,7 @@ prompt2 = PromptTemplate(
     input_variables=['text']
 )
 
-model = ChatOpenAI()
+model = ChatMistralAI(model="mistral-medium-latest", api_key=os.getenv("MISTRAL_API_KEY"))
 
 parser = StrOutputParser()
 
