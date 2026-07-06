@@ -12,6 +12,8 @@ from langchain_core.output_parsers import StrOutputParser
 
 load_dotenv()  # expects OPENAI_API_KEY in .env
 
+os.environ['LANGSMITH_PROJECT'] = 'RAG App'
+
 PDF_PATH = "islr.pdf"  # <-- change to your PDF filename
 
 # 1) Load PDF
@@ -23,7 +25,7 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
 splits = splitter.split_documents(docs)
 
 # 3) Embed + index
-emb = MistralAIEmbeddings(model="mistral-embed-latest", api_key=os.getenv("MISTRAL_API_KEY"))
+emb = MistralAIEmbeddings(model="mistral-embed", api_key=os.getenv("MISTRAL_API_KEY"))
 vs = FAISS.from_documents(splits, emb)
 retriever = vs.as_retriever(search_type="similarity", search_kwargs={"k": 4})
 

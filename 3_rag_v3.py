@@ -32,7 +32,7 @@ def split_documents(docs, chunk_size=1000, chunk_overlap=150):
 
 @traceable(name="build_vectorstore")
 def build_vectorstore(splits):
-    emb = MistralAIEmbeddings(model="mistral-embed-latest", api_key=os.getenv("MISTRAL_API_KEY"))
+    emb = MistralAIEmbeddings(model="mistral-embed", api_key=os.getenv("MISTRAL_API_KEY"))
     return FAISS.from_documents(splits, emb)
 
 # ----------------- parent setup function (traced) -----------------
