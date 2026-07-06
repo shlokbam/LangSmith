@@ -4,6 +4,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 import os 
 
+os.environ['LANGSMITH_PROJECT'] = 'Sequential LLM App'
+
 load_dotenv()
 
 prompt1 = PromptTemplate(
@@ -16,12 +18,20 @@ prompt2 = PromptTemplate(
     input_variables=['text']
 )
 
-model = ChatMistralAI(model="mistral-medium-latest", api_key=os.getenv("MISTRAL_API_KEY"))
+model = ChatMistralAI(model="mistral-small-latest", api_key=os.getenv("MISTRAL_API_KEY"))
 
 parser = StrOutputParser()
 
 chain = prompt1 | model | parser | prompt2 | model | parser
 
-result = chain.invoke({'topic': 'Unemployment in India'})
+config = {
+    'tags': ['sequential', 'llm'],
+    'metadata': {
+        'user': 'Shlok',
+        'topic': 'Unemployment in India'
+    }
+}
+
+result = chain.invoke({'topic': 'Unemployment in India'}, config=config)
 
 print(result)

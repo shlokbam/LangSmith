@@ -35,7 +35,8 @@ LANGSMITH_PROJECT="My First App"
 ### 1. Simple LLM Call (`1_simple_llm_call.py`)
 This script demonstrates the absolute basics of LangSmith auto-tracing. By simply enabling the environment variables, any LangChain run is automatically sent to LangSmith.
 
-- **Concepts**: Simple prompt, model invocation, output parsing, automatic trace capture.
+- **Concepts**: Simple prompt, model invocation, output parsing, automatic trace capture, setting project names dynamically.
+- **Project Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'Simple LLM App'` to route traces to a specific dashboard project.
 - **Run**:
   ```bash
   python3 1_simple_llm_call.py
@@ -50,7 +51,9 @@ This script demonstrates the absolute basics of LangSmith auto-tracing. By simpl
 ### 2. Sequential Chains (`2_sequential_chain.py`)
 See how LangSmith automatically tracks data flowing between multiple links in a chain. This script takes a topic, generates a report, and then feeds that report into a second prompt to generate a 5-point summary.
 
-- **Concepts**: Chain of chains (`|` operator), sequential trace nesting.
+- **Concepts**: Chain of chains (`|` operator), sequential trace nesting, configuring metadata/tags, and optimizing runtimes by using a faster model (`mistral-small-latest`).
+- **Project Configuration**: Sets `os.environ['LANGSMITH_PROJECT'] = 'Sequential LLM App'` to isolate these runs.
+- **Run Configuration**: Passes tags (`['sequential', 'llm']`) and metadata (`{'user': 'Shlok', 'topic': 'Unemployment in India'}`) to categorise runs inside the LangSmith UI.
 - **Run**:
   ```bash
   python3 2_sequential_chain.py
@@ -65,6 +68,9 @@ See how LangSmith automatically tracks data flowing between multiple links in a 
       A --> F["ChatMistralAI (Summarize Report)"]
       A --> G["StrOutputParser (Summarize Report)"]
   ```
+
+- **LangSmith Tracing Visualization**:
+  ![Sequential Chain Trace](2_sequential_chain.png)
 
 ---
 

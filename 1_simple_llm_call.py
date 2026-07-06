@@ -6,6 +6,8 @@ import os
 
 load_dotenv()
 
+os.environ['LANGSMITH_PROJECT'] = 'Simple LLM App'
+
 # Simple one-line prompt
 prompt = PromptTemplate.from_template("{question}")
 
